@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.lumination.leadmelabs.models.applications.Application" />
+        <import type="android.view.View"/>
+        <variable
+            name="applicationList"
+            type="java.util.ArrayList&lt;Application&gt;" />
+        <variable
+            name="applicationsLoaded"
+            type="java.lang.Boolean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey">
+
+        <TextView
+            style="@style/PageTitle"
+            android:text="@string/vr_library_title" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/steam_selection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="75dp"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            app:flexDirection="column"
+            tools:context=".ui.stations.ApplicationSelectionFragment">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="30dp"
+                android:paddingStart="30dp"
+                android:paddingEnd="40dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between"
+                app:layout_flexShrink="0">
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:flexDirection="column">
+
+                    <TextView
+                        style="@style/HeadingTitle"
+                        android:text="@string/vr_library"
+                        android:textSize="32sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pick_an_experience"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </com.google.android.flexbox.FlexboxLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="35dp"
+                    app:flexDirection="row">
+
+                    <EditText
+                        android:id="@+id/search_input"
+                        android:layout_width="300dp"
+                        android:layout_height="50dp"
+                        android:autofillHints="0"
+                        android:background="@drawable/bg_white_curved"
+                        android:clickable="true"
+                        android:drawableStart="@drawable/icon_search"
+                        android:drawablePadding="10dp"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center_vertical"
+                        android:hint="@string/search"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:paddingStart="15dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="2dp"
+                        android:textColorHint="@color/grey_hint"
+                        android:textSize="15sp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/refresh_steam_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bg_blue_refresh"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="@string/refresh"
+                        android:textAllCaps="false"
+                        app:icon="@drawable/icon_refresh" />
+                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{applicationList.size() > 0 ? View.GONE : View.VISIBLE}"
+                app:alignItems="center"
+                app:justifyContent="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="@{applicationsLoaded ? `No results for search` : `VR library loading, select refesh to manually reload...`}" />
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/steam_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:visibility="@{applicationList.size() > 0 ? View.VISIBLE : View.GONE}">
+
+                <GridView
+                    android:id="@+id/steam_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:columnWidth="290dp"
+                    android:fadeScrollbars="false"
+                    android:horizontalSpacing="20dp"
+                    android:numColumns="auto_fit"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="20dp"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbarThumbVertical="@color/blue"
+                    android:scrollbarTrackVertical="@color/grey_medium"
+                    android:smoothScrollbar="true"
+                    android:verticalSpacing="30dp"
+                    tools:listitem="@layout/application_tile" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <RelativeLayout
+            android:id="@+id/logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RelativeLayout
+            android:id="@+id/system_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+</layout>
