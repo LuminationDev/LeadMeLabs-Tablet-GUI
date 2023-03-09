@@ -31,9 +31,9 @@ import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ApplicationAdapter extends BaseAdapter {
-
     private final String TAG = "SteamApplicationAdapter";
 
     public ArrayList<Application> applicationList = new ArrayList<>();
@@ -74,20 +74,27 @@ public class ApplicationAdapter extends BaseAdapter {
 
         Application currentApplication = getItem(position);
 
-        //TODO update this when a new image is available?
+        String filePath;
         switch(currentApplication.type) {
             case "Custom":
-                Glide.with(view).load(CustomApplication.getImageUrl(currentApplication.name)).into((ImageView) view.findViewById(R.id.experience_image));
+                filePath = CustomApplication.getImageUrl(currentApplication.name);
                 break;
             case "Steam":
-                Glide.with(view).load(SteamApplication.getImageUrl(currentApplication.id)).into((ImageView) view.findViewById(R.id.experience_image));
+                filePath = SteamApplication.getImageUrl(currentApplication.id);
                 break;
             case "Vive":
-                Glide.with(view).load(ViveApplication.getImageUrl(currentApplication.id)).into((ImageView) view.findViewById(R.id.experience_image));
+                filePath = ViveApplication.getImageUrl(currentApplication.id);
                 break;
             default:
+                filePath = "";
         }
 
+        //Load the image url or a default image if nothing is available
+        if(Objects.equals(filePath, "")) {
+            Glide.with(view).load(R.drawable.default_header).into((ImageView) view.findViewById(R.id.experience_image));
+        } else {
+            Glide.with(view).load(filePath).into((ImageView) view.findViewById(R.id.experience_image));
+        }
 
         binding.setApplication(currentApplication);
 
@@ -118,6 +125,7 @@ public class ApplicationAdapter extends BaseAdapter {
                 completeSelectApplicationAction(currentApplication);
             }
         };
+
         view.setOnClickListener(selectGame);
         Button playButton = view.findViewById(R.id.experience_play_button);
         playButton.setOnClickListener(selectGame);
