@@ -1,9 +1,6 @@
 package com.lumination.leadmelabs.managers;
 
 import com.lumination.leadmelabs.MainActivity;
-import com.lumination.leadmelabs.models.applications.CustomApplication;
-import com.lumination.leadmelabs.models.applications.SteamApplication;
-import com.lumination.leadmelabs.models.applications.ViveApplication;
 import com.lumination.leadmelabs.services.NetworkService;
 
 import java.io.File;
@@ -22,16 +19,16 @@ public class ImageManager {
      * @param list A string of experiences that has been received from the NUC.
      */
     public static void CheckLocalCache(String list) {
-//        String[] apps = list.split("/");
-//
-//        for (String app: apps) {
-//            String[] appData = app.split("\\|");
-//
-//            //Currently only tracking the Custom images
-//            if (appData.length > 1 && appData[0].equals("Custom")) {
-//                loadLocalImage(appData[2]);
-//            }
-//        }
+        String[] apps = list.split("/");
+
+        for (String app: apps) {
+            String[] appData = app.split("\\|");
+
+            //Currently only tracking the Custom images
+            if (appData.length > 1 && appData[0].equals("Custom")) {
+                loadLocalImage(appData[2]);
+            }
+        }
     }
 
     /**
@@ -61,7 +58,6 @@ public class ImageManager {
                 requestImage(experienceName);
             }
 
-            //TODO create a default placeholder image in the future.
             return "";
         }
     }
