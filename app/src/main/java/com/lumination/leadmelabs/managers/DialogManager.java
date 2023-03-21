@@ -15,9 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -25,14 +28,19 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.databinding.FragmentStationSingleBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.applications.details.Actions;
+import com.lumination.leadmelabs.models.applications.details.Details;
+import com.lumination.leadmelabs.models.applications.details.Levels;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.Adapters.GlobalAdapter;
+import com.lumination.leadmelabs.ui.application.Adapters.LevelAdapter;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.ui.stations.BasicStationSelectionAdapter;
 import com.lumination.leadmelabs.ui.stations.StationSingleFragment;
 import com.lumination.leadmelabs.ui.stations.StationsFragment;
-import com.lumination.leadmelabs.ui.stations.ApplicationAdapter;
+import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 import com.lumination.leadmelabs.utilities.Helpers;
 import com.lumination.leadmelabs.utilities.WakeOnLan;
 
@@ -812,5 +820,106 @@ public class DialogManager {
                 }
             }
         }
+    }
+
+    /**
+     * Display a list of buttons that represent the different options for the currently loaded
+     * experience.
+     */
+    public static void showExperienceOptions(String gameName, Details details) {
+        View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.dialog_experience_options, null);
+        AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.ExperienceDetailsDialogTheme).setView(basicDialogView).create();
+
+        TextView title = basicDialogView.findViewById(R.id.title);
+        title.setText(gameName);
+
+        //Set the global actions
+        RecyclerView globalRecyclerView = basicDialogView.findViewById(R.id.global_action_list);
+        globalRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.getInstance().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
+        GlobalAdapter globalAdapter = new GlobalAdapter(details.getGlobalActions());
+        globalRecyclerView.setAdapter(globalAdapter);
+
+        int numberOfColumns = 1;
+
+        //Set the levels and their actions
+        RecyclerView levelRecyclerView = basicDialogView.findViewById(R.id.level_list);
+        levelRecyclerView.setLayoutManager(new GridLayoutManager(MainActivity.getInstance().getApplicationContext(), numberOfColumns));
+        LevelAdapter levelAdapter = new LevelAdapter(details.getLevels());
+        levelRecyclerView.setAdapter(levelAdapter);
+
+        //Assign listeners to the subtitles to hide the options
+        MaterialButton global = basicDialogView.findViewById(R.id.global);
+        global.setOnClickListener(v ->  {
+            globalAdapter.toggleExpanded();
+
+            //Flip the arrow
+            global.setIcon(globalAdapter.getExpanded() ?
+                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
+                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
+            );
+            basicDialogView.findViewById(R.id.global_action_list).setVisibility(globalAdapter.getExpanded() ? View.VISIBLE : View.GONE);
+        });
+
+        MaterialButton levels = basicDialogView.findViewById(R.id.levels);
+        levels.setOnClickListener(v -> {
+            levelAdapter.toggleExpanded();
+
+            //Flip the arrow
+            levels.setIcon(levelAdapter.getExpanded() ?
+                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
+                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
+            );
+            basicDialogView.findViewById(R.id.level_list).setVisibility(levelAdapter.getExpanded() ? View.VISIBLE : View.GONE);
+        });
+
+        Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
+
+        basicDialog.show();
+        basicDialog.getWindow().setLayout(1200, 900);
+    }
+
+    /**
+     * Create a basic test Details class for experimenting on the tablet.
+     * @return An instantiated Details class.
+     */
+    private static Details createTest() {
+        //Create some test options
+        Details details = new Details("123456", "Testing");
+
+        //Global actions
+        Actions actionResume = new Actions("Resume", "resume");
+        Actions actionPause = new Actions("Pause", "pause");
+        Actions actionShutdown = new Actions("Shutdown", "shutdown");
+
+        ArrayList<Actions> ga = new ArrayList<>();
+        ga.add(actionResume);
+        ga.add(actionPause);
+        ga.add(actionShutdown);
+
+        details.setGlobalActions(ga);
+
+
+        //Levels
+        Actions actionColorRed = new Actions("Color Red", "Color,#0000FF");
+        Actions actionColorBlue = new Actions("Color Blue", "Color,#FF0000");
+
+        Levels level1 = new Levels("Cube Scene", "Scene,CubeScene");
+        level1.addAction(actionColorRed);
+        level1.addAction(actionColorBlue);
+
+        Levels level2 = new Levels("Sphere Scene", "Scene,SphereScene");
+        level2.addAction(actionColorRed);
+        level2.addAction(actionColorBlue);
+
+        ArrayList<Levels> ls = new ArrayList<>();
+        ls.add(level1);
+        ls.add(level2);
+
+        details.setLevels(ls);
+
+
+
+        return details;
     }
 }

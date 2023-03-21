@@ -31,7 +31,7 @@
             android:clickable="true"
             android:focusableInTouchMode="true"
             app:flexDirection="column"
-            tools:context=".ui.stations.ApplicationSelectionFragment">
+            tools:context=".ui.application.ApplicationSelectionFragment">
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                         android:textSize="15sp"/>
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/refresh_steam_btn"
+                        android:id="@+id/refresh_experiences_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginStart="10dp"
@@ -117,7 +117,7 @@
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/steam_list_container"
+                android:id="@+id/experience_list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
@@ -125,7 +125,7 @@
                 android:visibility="@{applicationList.size() > 0 ? View.VISIBLE : View.GONE}">
 
                 <GridView
-                    android:id="@+id/steam_list"
+                    android:id="@+id/experience_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"

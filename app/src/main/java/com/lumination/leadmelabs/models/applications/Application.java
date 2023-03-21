@@ -1,19 +1,20 @@
 package com.lumination.leadmelabs.models.applications;
 
+import com.lumination.leadmelabs.models.applications.details.Details;
+
 import java.util.Objects;
 
 public class Application {
     public String type;
     public String name;
     public int id;
+    public Details details;
 
     public Application(String type, String name, int id) {
         this.type = type;
         this.name = name;
         this.id = id;
     }
-
-    public static String getImageUrl(String id) { return ""; };
 
     @Override
     public boolean equals(final Object obj) {

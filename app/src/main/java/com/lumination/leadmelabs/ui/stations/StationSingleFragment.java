@@ -25,8 +25,13 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.managers.FirebaseManager;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.applications.Application;
+import com.lumination.leadmelabs.models.applications.CustomApplication;
 import com.lumination.leadmelabs.models.applications.SteamApplication;
+import com.lumination.leadmelabs.models.applications.ViveApplication;
+import com.lumination.leadmelabs.models.applications.details.Details;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
@@ -36,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class StationSingleFragment extends Fragment {
 
@@ -88,13 +94,11 @@ public class StationSingleFragment extends Fragment {
         menuButton.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(getActivity(), menuButton);
             PopupMenu.OnMenuItemClickListener onMenuItemClickListener = menuItem -> {
-                switch (menuItem.getItemId()) {
-                    case R.id.rename:
-                        DialogManager.buildRenameStationDialog(getContext(), binding);
-                        return true;
-                    default:
-                        return false;
+                if (menuItem.getItemId() == R.id.rename) {
+                    DialogManager.buildRenameStationDialog(getContext(), binding);
+                    return true;
                 }
+                return false;
             };
             popupMenu.setOnMenuItemClickListener(onMenuItemClickListener);
             popupMenu.inflate(R.menu.station_single_menu_actions);
@@ -118,7 +122,7 @@ public class StationSingleFragment extends Fragment {
             if (binding.getSelectedStation().gameId != null && binding.getSelectedStation().gameId.length() > 0) {
                 NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Launch:" + binding.getSelectedStation().gameId);
                 SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedSteamApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
+                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
                 HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                     put("station_id", String.valueOf(binding.getSelectedStation().id));
                 }};
@@ -174,7 +178,7 @@ public class StationSingleFragment extends Fragment {
             } else {
                 CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
                     if (seconds <= 0) {
-                        shutdownButton.setText("Shut Down Station");
+                        shutdownButton.setText(R.string.shut_down_station);
                     } else {
                         if (!cancelledShutdown) {
                             shutdownButton.setText("Cancel (" + seconds + ")");
@@ -191,7 +195,7 @@ public class StationSingleFragment extends Fragment {
                     if (DialogManager.shutdownTimer != null) {
                         DialogManager.shutdownTimer.cancel();
                     }
-                    shutdownButton.setText("Shut Down Station");
+                    shutdownButton.setText(R.string.shut_down_station);
                 }
             }
         });
@@ -200,10 +204,48 @@ public class StationSingleFragment extends Fragment {
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
             if (station.gameId != null && station.gameId.length() > 0) {
-                Glide.with(view).load(SteamApplication.getImageUrl(station.gameId)).into(gameControlImage);
+
+                String filePath;
+                switch(station.gameType) {
+                    case "Custom":
+                        filePath = CustomApplication.getImageUrl(station.gameName);
+                        break;
+                    case "Steam":
+                        filePath = SteamApplication.getImageUrl(station.id);
+                        break;
+                    case "Vive":
+                        filePath = ViveApplication.getImageUrl(station.id);
+                        break;
+                    default:
+                        filePath = "";
+                }
+
+                //Load the image url or a default image if nothing is available
+                if(Objects.equals(filePath, "")) {
+                    Glide.with(view).load(R.drawable.default_header).into(gameControlImage);
+                } else {
+                    Glide.with(view).load(filePath).into(gameControlImage);
+                }
             } else {
                 gameControlImage.setImageDrawable(null);
             }
+        });
+
+        //Open up the experience options modal
+        gameControlImage.setOnClickListener(v -> {
+            String gameName = mViewModel.getSelectedStation().getValue().gameName;
+
+            Details details = null;
+
+            for (Application application: mViewModel.getSelectedStation().getValue().applications) {
+                if (Objects.equals(application.name, gameName)) {
+                    details = application.details;
+                }
+            }
+
+            if(details == null) return;
+
+            DialogManager.showExperienceOptions(gameName, details);
         });
     }
 }

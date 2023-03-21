@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.application;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -27,6 +27,7 @@ import com.lumination.leadmelabs.databinding.FragmentSteamSelectionBinding;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.logo.LogoFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +45,9 @@ public class ApplicationSelectionFragment extends Fragment {
     public static void setStationId (int stationId) {
         ApplicationSelectionFragment.stationId = stationId;
         if (stationId > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationSteamApplications(stationId);
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllSteamApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
         }
         if (installedApplicationAdapter != null) {
             ApplicationAdapter.stationId = stationId;
@@ -68,13 +69,13 @@ public class ApplicationSelectionFragment extends Fragment {
 
     private void updateSteamApplicationList(int stationId, GridView view) {
         if (stationId > 0) {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getStationSteamApplications(stationId);
+            installedApplicationList = (ArrayList<Application>) mViewModel.getStationApplications(stationId);
         } else {
-            installedApplicationList = (ArrayList<Application>) mViewModel.getAllSteamApplications();
+            installedApplicationList = (ArrayList<Application>) mViewModel.getAllApplications();
         }
         installedApplicationAdapter.applicationList = (ArrayList<Application>) installedApplicationList.clone();
         binding.setApplicationList(installedApplicationAdapter.applicationList);
-        binding.setApplicationsLoaded(mViewModel.getAllSteamApplications().size() > 0);
+        binding.setApplicationsLoaded(mViewModel.getAllApplications().size() > 0);
         installedApplicationAdapter.notifyDataSetChanged();
         view.setAdapter(installedApplicationAdapter);
     }
@@ -90,16 +91,16 @@ public class ApplicationSelectionFragment extends Fragment {
                     .commitNow();
         }
 
-        GridView steamGridView = (GridView) view.findViewById(R.id.steam_list);
+        GridView steamGridView = (GridView) view.findViewById(R.id.experience_list);
         installedApplicationAdapter = new ApplicationAdapter(getContext());
         updateSteamApplicationList(stationId, steamGridView);
         mViewModel.getStations().observe(getViewLifecycleOwner(), stations -> {
             if (stationId > 0) {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationSteamApplications(stationId).size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getStationApplications(stationId).size()) {
                     updateSteamApplicationList(stationId, steamGridView);
                 }
             } else {
-                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllSteamApplications().size()) {
+                if (installedApplicationAdapter.applicationList.size() != mViewModel.getAllApplications().size()) {
                     updateSteamApplicationList(stationId, steamGridView);
                 }
             }
@@ -128,7 +129,7 @@ public class ApplicationSelectionFragment extends Fragment {
             }
             return false;
         });
-        FlexboxLayout steamListContainer = view.findViewById(R.id.steam_list_container);
+        FlexboxLayout steamListContainer = view.findViewById(R.id.experience_list_container);
         steamListContainer.setOnClickListener(v -> {
             dismissKeyboard(searchInput);
         });
@@ -144,7 +145,7 @@ public class ApplicationSelectionFragment extends Fragment {
             return false;
         });
 
-        Button refresh_btn = view.findViewById(R.id.refresh_steam_btn);
+        Button refresh_btn = view.findViewById(R.id.refresh_experiences_btn);
         refresh_btn.setOnClickListener(v -> refreshSteamGamesList());
     }
 
