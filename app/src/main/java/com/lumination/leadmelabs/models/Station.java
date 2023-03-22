@@ -22,6 +22,7 @@ public class Station implements Cloneable {
     public String room;
     public String gameName = null;
     public String gameId;
+    public String gameType;
     public int volume;
     public ArrayList<Application> applications = new ArrayList<>();
     public boolean selected = false;
@@ -90,14 +91,14 @@ public class Station implements Cloneable {
     }
 
     /**
-     * Detect if a particular station has a Steam application installed on it
-     * @param steamApplicationId An int that represents the ID of an experience.
+     * Detect if a particular station has an application installed on it
+     * @param applicationId An int that represents the ID of an experience.
      * @return A boolean if the application is installed.
      */
-    public boolean hasSteamApplicationInstalled(int steamApplicationId)
+    public boolean hasApplicationInstalled(int applicationId)
     {
-        for (Application steamApplication:this.applications) {
-            if (steamApplication.id == steamApplicationId) {
+        for (Application application:this.applications) {
+            if (application.id == applicationId) {
                 return true;
             }
         }

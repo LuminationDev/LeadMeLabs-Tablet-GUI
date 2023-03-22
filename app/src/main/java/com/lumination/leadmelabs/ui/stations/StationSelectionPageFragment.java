@@ -18,6 +18,7 @@ import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.managers.DialogManager;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
 import com.lumination.leadmelabs.utilities.Identifier;
@@ -61,7 +62,7 @@ public class StationSelectionPageFragment extends Fragment {
             ArrayList<Station> stations = StationSelectionFragment.getInstance().getRoomStations();
             stations = (ArrayList<Station>) stations.clone();
             for (Station station:stations) {
-                if (!station.status.equals("Off") && station.hasSteamApplicationInstalled(mViewModel.getSelectedSteamApplicationId())) {
+                if (!station.status.equals("Off") && station.hasApplicationInstalled(mViewModel.getSelectedApplicationId())) {
                     station.selected = checked;
                     mViewModel.updateStationById(station.id, station);
                 }
@@ -70,13 +71,13 @@ public class StationSelectionPageFragment extends Fragment {
 
         Button backButton = view.findViewById(R.id.cancel_button);
         backButton.setOnClickListener(v -> {
-            mViewModel.selectSelectedSteamApplication(0);
+            mViewModel.selectSelectedApplication(0);
             SideMenuFragment.loadFragment(ApplicationSelectionFragment.class, "session");
         });
 
         Button playButton = view.findViewById(R.id.select_stations);
         playButton.setOnClickListener(v -> {
-            int steamGameId = mViewModel.getSelectedSteamApplicationId();
+            int steamGameId = mViewModel.getSelectedApplicationId();
             int[] selectedIds = mViewModel.getSelectedStationIds();
             if (selectedIds.length > 0) {
                 confirmLaunchGame(selectedIds, steamGameId);
@@ -96,7 +97,7 @@ public class StationSelectionPageFragment extends Fragment {
         String stationIds = String.join(", ", Arrays.stream(selectedIds).mapToObj(String::valueOf).toArray(String[]::new));
         NetworkService.sendMessage("Station," + stationIds, "Experience", "Launch:" + steamGameId);
         SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-        DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedSteamApplicationName(steamGameId), false);
+        DialogManager.awaitStationGameLaunch(selectedIds, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(steamGameId), false);
     }
 
     public void confirmLaunchGame(int[] selectedIds, int steamGameId, AlertDialog dialog) {

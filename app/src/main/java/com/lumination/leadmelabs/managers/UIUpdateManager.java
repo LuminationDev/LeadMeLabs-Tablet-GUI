@@ -13,6 +13,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.view.View;
 
@@ -263,6 +264,9 @@ public class UIUpdateManager {
                 case "gameId":
                     station.gameId = value;
                     break;
+                case "gameType":
+                    station.gameType = value;
+                    break;
                 case "name":
                     station.setName(value);
                     break;
@@ -274,6 +278,19 @@ public class UIUpdateManager {
                     break;
                 case "installedApplications":
                     station.setApplicationsFromJsonString(value);
+                    break;
+                case "details":
+                    if(station.gameName == null) {
+                        return;
+                    }
+                    MainActivity.runOnUI(() -> {
+                        try {
+                            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(station.gameName, new JSONObject(value));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    break;
             }
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });

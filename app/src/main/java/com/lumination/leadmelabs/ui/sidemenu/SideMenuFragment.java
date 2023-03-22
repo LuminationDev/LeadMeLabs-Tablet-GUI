@@ -27,7 +27,7 @@ import com.lumination.leadmelabs.ui.pages.SettingsPageFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.settings.SettingsViewModel;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.stations.ApplicationSelectionFragment;
+import com.lumination.leadmelabs.ui.application.ApplicationSelectionFragment;
 
 import java.util.Objects;
 

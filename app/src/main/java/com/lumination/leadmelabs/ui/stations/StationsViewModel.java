@@ -1,5 +1,7 @@
 package com.lumination.leadmelabs.ui.stations;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -7,6 +9,9 @@ import androidx.lifecycle.ViewModel;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.models.applications.Application;
 import com.lumination.leadmelabs.models.Station;
+import com.lumination.leadmelabs.models.applications.details.Actions;
+import com.lumination.leadmelabs.models.applications.details.Details;
+import com.lumination.leadmelabs.models.applications.details.Levels;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 
@@ -17,12 +22,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
     private MutableLiveData<Station> selectedStation;
-    private MutableLiveData<Integer> selectedSteamApplicationId = new MutableLiveData<>();
+    private MutableLiveData<Integer> selectedApplicationId = new MutableLiveData<>();
 
     public LiveData<List<Station>> getStations() {
         if (stations == null) {
@@ -44,18 +50,18 @@ public class StationsViewModel extends ViewModel {
         return stations.stream().map(station -> station.name).collect(Collectors.toList());
     }
 
-    public int getSelectedSteamApplicationId() {
-        return selectedSteamApplicationId.getValue();
+    public int getSelectedApplicationId() {
+        return selectedApplicationId.getValue();
     }
 
-    public String getSelectedSteamApplicationName(int steamApplicationId) {
-        List<Application> steamApps = getAllSteamApplications();
-        steamApps.removeIf(steamApplication -> steamApplication.id != steamApplicationId);
-        return steamApps.get(0).name;
+    public String getSelectedApplicationName(int applicationId) {
+        List<Application> allApps = getAllApplications();
+        allApps.removeIf(application -> application.id != applicationId);
+        return allApps.get(0).name;
     }
 
-    public void selectSelectedSteamApplication(int id) {
-        selectedSteamApplicationId.setValue(id);
+    public void selectSelectedApplication(int id) {
+        selectedApplicationId.setValue(id);
     }
 
     public int[] getSelectedStationIds() {
@@ -99,7 +105,69 @@ public class StationsViewModel extends ViewModel {
         return null;
     }
 
-    public List<Application> getAllSteamApplications () {
+    /**
+     * Set the details of an application on a specified experience. The details can include, global
+     * actions and different levels. As there is no full list of experiences it needs to set the
+     * details for each instance of that experience. I.e one for each station it is installed on.
+     * @param applicationName A string representing the name of the application to update.
+     */
+    public void setApplicationDetails(String applicationName, JSONObject applicationDetails) throws JSONException {
+        if(stations.getValue() == null) {
+            return;
+        }
+
+        Log.e("DETAILS", String.valueOf(applicationDetails));
+
+        //Deconstruct the JSON object into the new details class and associated subclasses.
+        Details details = parseDetails(applicationDetails);
+
+        for (Station station: stations.getValue()) {
+            //Check each station for the experience
+            for (Application application: station.applications) {
+                if (Objects.equals(application.name, applicationName)) {
+                    application.details = details;
+                }
+            }
+        }
+    }
+
+    /**
+     * Turn the JSON object that is supplied into the Details class with its associated Global actions,
+     * levels and level specific actions.
+     * @param JSONvalue A JSON object that has been sent from a Station.
+     * @return A Details class instantiation
+     */
+    private Details parseDetails(JSONObject JSONvalue) throws JSONException {
+        Details details = new Details(JSONvalue.getString("id"), JSONvalue.getString("name"));
+
+        JSONArray globalActions = JSONvalue.getJSONArray("globalActions");
+        for (int i = 0; i < globalActions.length(); i++) {
+            JSONObject temp = globalActions.getJSONObject(i);
+            details.addGlobalAction(new Actions(temp.getString("name"), temp.getString("trigger")));
+        }
+
+        JSONArray levels = JSONvalue.getJSONArray("levels");
+        for (int i = 0; i < levels.length(); i++) {
+            JSONObject temp = levels.getJSONObject(i);
+            Levels level = new Levels(temp.getString("name"), temp.getString("trigger"));
+
+            //Add the level trigger as it's first action
+            level.addAction(new Actions("Set", level.trigger));
+
+            //Add the rest of the actions
+            JSONArray actions = temp.getJSONArray("actions");
+            for (int y = 0; y < actions.length(); y++) {
+                JSONObject action = actions.getJSONObject(y);
+                level.addAction(new Actions(action.getString("name"), action.getString("trigger")));
+            }
+
+            details.addLevels(level);
+        }
+
+        return details;
+    }
+
+    public List<Application> getAllApplications() {
         HashSet<Application> hashSet = new HashSet<>();
         if(stations.getValue() == null) {
             return new ArrayList<>();
@@ -113,7 +181,7 @@ public class StationsViewModel extends ViewModel {
         return list;
     }
 
-    public List<Application> getStationSteamApplications (int stationId) {
+    public List<Application> getStationApplications(int stationId) {
         ArrayList<Application> list = new ArrayList<>();
         if(stations.getValue() == null) {
             return list;
@@ -221,8 +289,11 @@ public class StationsViewModel extends ViewModel {
             if (!stationJson.getString("gameName").equals("")) {
                 station.gameName = stationJson.getString("gameName");
             }
-            if (stationJson.getString("gameId") != "null") {
+            if (!stationJson.getString("gameId").equals("null")) {
                 station.gameId = stationJson.getString("gameId");
+            }
+            if (!stationJson.getString("gameType").equals("null")) {
+                station.gameType = stationJson.getString("gameType");
             }
             st.add(station);
         }

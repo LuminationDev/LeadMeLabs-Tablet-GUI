@@ -1,4 +1,4 @@
-package com.lumination.leadmelabs.ui.stations;
+package com.lumination.leadmelabs.ui.application;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,6 +29,8 @@ import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.pages.DashboardPageFragment;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.SideMenuFragment;
+import com.lumination.leadmelabs.ui.stations.StationSelectionPageFragment;
+import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -147,7 +149,7 @@ public class ApplicationAdapter extends BaseAdapter {
                 DialogManager.awaitStationGameLaunch(new int[] { station.id }, currentApplication.name, false);
             }
         } else {
-            mViewModel.selectSelectedSteamApplication(currentApplication.id);
+            mViewModel.selectSelectedApplication(currentApplication.id);
             SideMenuFragment.loadFragment(StationSelectionPageFragment.class, "notMenu");
             MainActivity.fragmentManager.beginTransaction()
                     .replace(R.id.rooms, RoomFragment.class, null)
