@@ -103,6 +103,23 @@ android:background="@drawable/bg_alertdialog_vern">
                 app:rippleColor="@color/grey" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/ignore_dialog"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="228dp"
+                android:layout_height="60dp"
+                android:elevation="0dp"
+                android:letterSpacing="0"
+                android:paddingVertical="10dp"
+                android:stateListAnimator="@null"
+                android:text="@string/ignore"
+                android:textAllCaps="false"
+                android:textColor="@color/red"
+                app:cornerRadius="10dp"
+                app:layout_flexShrink="0"
+                app:rippleColor="@color/grey"
+                app:strokeColor="@color/red" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/close_dialog"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="228dp"

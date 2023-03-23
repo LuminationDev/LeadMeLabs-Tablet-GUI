@@ -116,8 +116,6 @@ public class StationsViewModel extends ViewModel {
             return;
         }
 
-        Log.e("DETAILS", String.valueOf(applicationDetails));
-
         //Deconstruct the JSON object into the new details class and associated subclasses.
         Details details = parseDetails(applicationDetails);
 
