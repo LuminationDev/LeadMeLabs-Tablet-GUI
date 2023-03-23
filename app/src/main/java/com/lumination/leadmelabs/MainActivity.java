@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 //The prompt has been ignored, try again in 10 minutes
                 if(reconnectionIgnored) {
+                    Log.e("MainActivity", "Reconnection Ignored");
                     handler.postDelayed(this, 10 * 60000);
                     reconnectionIgnored = false;
                     return;

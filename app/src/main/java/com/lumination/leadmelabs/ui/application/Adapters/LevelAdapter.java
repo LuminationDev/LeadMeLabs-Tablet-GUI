@@ -21,11 +21,9 @@ import java.util.ArrayList;
 
 public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.ViewHolder> {
     private ArrayList<Levels> mData;
-    private boolean mIsExpanded;
 
     public LevelAdapter(ArrayList<Levels> data) {
         mData = data;
-        mIsExpanded = true;
     }
 
     @NonNull
@@ -47,23 +45,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (mIsExpanded) {
-            return mData.size();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Toggle the visibility of the attached data set.
-     */
-    public void toggleExpanded() {
-        mIsExpanded = !mIsExpanded;
-        notifyDataSetChanged();
-    }
-
-    public boolean getExpanded() {
-        return this.mIsExpanded;
+        return mData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

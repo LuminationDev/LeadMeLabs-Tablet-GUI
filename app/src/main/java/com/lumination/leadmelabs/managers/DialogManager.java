@@ -854,36 +854,11 @@ public class DialogManager {
         LevelAdapter levelAdapter = new LevelAdapter(details.getLevels());
         levelRecyclerView.setAdapter(levelAdapter);
 
-        //Assign listeners to the subtitles to hide the options
-        MaterialButton global = basicDialogView.findViewById(R.id.global);
-        global.setOnClickListener(v ->  {
-            globalAdapter.toggleExpanded();
-
-            //Flip the arrow
-            global.setIcon(globalAdapter.getExpanded() ?
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
-            );
-            basicDialogView.findViewById(R.id.global_action_list).setVisibility(globalAdapter.getExpanded() ? View.VISIBLE : View.GONE);
-        });
-
-        MaterialButton levels = basicDialogView.findViewById(R.id.levels);
-        levels.setOnClickListener(v -> {
-            levelAdapter.toggleExpanded();
-
-            //Flip the arrow
-            levels.setIcon(levelAdapter.getExpanded() ?
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
-            );
-            basicDialogView.findViewById(R.id.level_list).setVisibility(levelAdapter.getExpanded() ? View.VISIBLE : View.GONE);
-        });
-
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1200, 900);
+        basicDialog.getWindow().setLayout(1200, 1000);
     }
 
     /**

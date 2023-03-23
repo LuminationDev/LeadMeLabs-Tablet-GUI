@@ -17,11 +17,8 @@ import java.util.ArrayList;
 
 public class GlobalAdapter extends RecyclerView.Adapter<GlobalAdapter.ViewHolder> {
     private ArrayList<Actions> mData;
-    private boolean mIsExpanded;
-
     public GlobalAdapter(ArrayList<Actions> data) {
         mData = data;
-        mIsExpanded = true;
     }
 
     @NonNull
@@ -42,23 +39,7 @@ public class GlobalAdapter extends RecyclerView.Adapter<GlobalAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (mIsExpanded) {
-            return mData.size();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Toggle the visibility of the attached data set.
-     */
-    public void toggleExpanded() {
-        mIsExpanded = !mIsExpanded;
-        notifyDataSetChanged();
-    }
-
-    public boolean getExpanded() {
-        return this.mIsExpanded;
+        return mData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
