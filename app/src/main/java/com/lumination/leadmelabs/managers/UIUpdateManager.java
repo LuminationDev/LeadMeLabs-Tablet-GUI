@@ -235,7 +235,7 @@ public class UIUpdateManager {
                     if (value.equals("Ended")) {
                         DialogManager.sessionEndedOnStation(station.id);
 
-                        if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                        if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                             HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                                 put("station_id", String.valueOf(station.id));
                             }};
@@ -253,7 +253,7 @@ public class UIUpdateManager {
                 case "volume":
                     station.volume = Integer.parseInt(value);
 
-                    if (station != null && !ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+                    if (!ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue()) {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
                             put("station_id", String.valueOf(station.id));
                             put("volume_level", value);
@@ -285,7 +285,7 @@ public class UIUpdateManager {
                     }
                     MainActivity.runOnUI(() -> {
                         try {
-                            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(station.gameName, new JSONObject(value));
+                            ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(new JSONObject(value));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

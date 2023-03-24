@@ -109,9 +109,9 @@ public class StationsViewModel extends ViewModel {
      * Set the details of an application on a specified experience. The details can include, global
      * actions and different levels. As there is no full list of experiences it needs to set the
      * details for each instance of that experience. I.e one for each station it is installed on.
-     * @param applicationName A string representing the name of the application to update.
+     * @param applicationDetails A string representing the name of the application to update.
      */
-    public void setApplicationDetails(String applicationName, JSONObject applicationDetails) throws JSONException {
+    public void setApplicationDetails(JSONObject applicationDetails) throws JSONException {
         if(stations.getValue() == null) {
             return;
         }
@@ -122,7 +122,7 @@ public class StationsViewModel extends ViewModel {
         for (Station station: stations.getValue()) {
             //Check each station for the experience
             for (Application application: station.applications) {
-                if (Objects.equals(application.name, applicationName)) {
+                if (Objects.equals(application.name, details.name)) {
                     application.details = details;
                 }
             }
@@ -136,7 +136,7 @@ public class StationsViewModel extends ViewModel {
      * @return A Details class instantiation
      */
     private Details parseDetails(JSONObject JSONvalue) throws JSONException {
-        Details details = new Details(JSONvalue.getString("id"), JSONvalue.getString("name"));
+        Details details = new Details(JSONvalue.getString("name"));
 
         JSONArray globalActions = JSONvalue.getJSONArray("globalActions");
         for (int i = 0; i < globalActions.length(); i++) {

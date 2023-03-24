@@ -14,8 +14,6 @@ import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
 import com.lumination.leadmelabs.models.applications.details.Levels;
-import com.lumination.leadmelabs.services.NetworkService;
-import com.lumination.leadmelabs.ui.application.ApplicationAdapter;
 
 import java.util.ArrayList;
 

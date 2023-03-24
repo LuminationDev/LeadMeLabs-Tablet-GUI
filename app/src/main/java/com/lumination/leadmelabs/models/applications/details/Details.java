@@ -8,7 +8,6 @@ import java.util.ArrayList;
  * actions within those levels.
  */
 public class Details {
-    public String id;
     public String name;
 
     /**
@@ -23,8 +22,7 @@ public class Details {
      */
     private ArrayList<Levels> Levels = new ArrayList<>();
 
-    public Details(String id, String name) {
-        this.id = id;
+    public Details(String name) {
         this.name = name;
     }
 

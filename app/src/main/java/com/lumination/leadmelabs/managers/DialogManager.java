@@ -867,7 +867,7 @@ public class DialogManager {
      */
     private static Details createTest() {
         //Create some test options
-        Details details = new Details("123456", "Testing");
+        Details details = new Details("Testing");
 
         //Global actions
         Actions actionResume = new Actions("Resume", "resume");
