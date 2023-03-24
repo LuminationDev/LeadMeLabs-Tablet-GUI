@@ -626,7 +626,6 @@ public class DialogManager {
             reconnectButton.setVisibility(View.GONE);
             reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.VISIBLE);
             content.setVisibility(View.GONE);
-            //NetworkService.broadcast("Android");
 
             if(NetworkService.getNUCAddress() != null) {
                 NetworkService.refreshNUCAddress();
@@ -648,6 +647,14 @@ public class DialogManager {
             );
         });
 
+        Button ignoreReconnectDialogButton = reconnectDialogView.findViewById(R.id.ignore_dialog);
+        ignoreReconnectDialogButton.setOnClickListener(w -> {
+            content.setText(R.string.lost_server_message_content);
+            reconnectDialogView.findViewById(R.id.reconnect_loader).setVisibility(View.GONE);
+            reconnectDialog.dismiss();
+            MainActivity.reconnectionIgnored = true;
+        });
+
         Button closeReconnectDialogButton = reconnectDialogView.findViewById(R.id.close_dialog);
         closeReconnectDialogButton.setOnClickListener(w -> {
             content.setText(R.string.lost_server_message_content);
@@ -661,7 +668,7 @@ public class DialogManager {
         });
 
         reconnectDialog.show();
-        reconnectDialog.getWindow().setLayout(680, 680);
+        reconnectDialog.getWindow().setLayout(680, 720);
     }
 
     /**
@@ -847,36 +854,11 @@ public class DialogManager {
         LevelAdapter levelAdapter = new LevelAdapter(details.getLevels());
         levelRecyclerView.setAdapter(levelAdapter);
 
-        //Assign listeners to the subtitles to hide the options
-        MaterialButton global = basicDialogView.findViewById(R.id.global);
-        global.setOnClickListener(v ->  {
-            globalAdapter.toggleExpanded();
-
-            //Flip the arrow
-            global.setIcon(globalAdapter.getExpanded() ?
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
-            );
-            basicDialogView.findViewById(R.id.global_action_list).setVisibility(globalAdapter.getExpanded() ? View.VISIBLE : View.GONE);
-        });
-
-        MaterialButton levels = basicDialogView.findViewById(R.id.levels);
-        levels.setOnClickListener(v -> {
-            levelAdapter.toggleExpanded();
-
-            //Flip the arrow
-            levels.setIcon(levelAdapter.getExpanded() ?
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_minus, null) :
-                    ResourcesCompat.getDrawable(MainActivity.getInstance().getResources(), R.drawable.icon_circle_plus, null)
-            );
-            basicDialogView.findViewById(R.id.level_list).setVisibility(levelAdapter.getExpanded() ? View.VISIBLE : View.GONE);
-        });
-
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1200, 900);
+        basicDialog.getWindow().setLayout(1200, 1000);
     }
 
     /**
@@ -885,7 +867,7 @@ public class DialogManager {
      */
     private static Details createTest() {
         //Create some test options
-        Details details = new Details("123456", "Testing");
+        Details details = new Details("Testing");
 
         //Global actions
         Actions actionResume = new Actions("Resume", "resume");
