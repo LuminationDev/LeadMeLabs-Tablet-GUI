@@ -15,12 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -152,9 +150,7 @@ public class DialogManager {
         contentView.setText(R.string.update_message);
 
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
-        cancelButton.setOnClickListener(w -> {
-            basicDialog.dismiss();
-        });
+        cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
         basicDialog.getWindow().setLayout(680, 680);
@@ -167,10 +163,7 @@ public class DialogManager {
      * @param contentText A string representing what content is described within the dialog box.
      */
     public static void createConfirmationDialog(String titleText, String contentText) {
-        BooleanCallbackInterface booleanCallbackInterface = new BooleanCallbackInterface() {
-            @Override
-            public void callback(boolean result) { }
-        };
+        BooleanCallbackInterface booleanCallbackInterface = result -> { };
         createConfirmationDialog(titleText, contentText, booleanCallbackInterface, "Cancel", "Confirm");
     }
 
@@ -316,7 +309,7 @@ public class DialogManager {
 
                 renameStationDialog.dismiss();
             } else {
-                errorText.setText("Station name can only contains letters, numbers and spaces");
+                errorText.setText(R.string.station_name_warning);
                 errorText.setVisibility(View.VISIBLE);
             }
         });
@@ -413,9 +406,7 @@ public class DialogManager {
 
         EditText newMacAddress = view.findViewById(R.id.nuc_address_input);
         Button setAddress = view.findViewById(R.id.set_nuc_mac_button);
-        setAddress.setOnClickListener(v -> {
-            SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString());
-        });
+        setAddress.setOnClickListener(v -> SettingsFragment.mViewModel.setNucMacAddress(newMacAddress.getText().toString()));
 
         Button wakeNuc = view.findViewById(R.id.wake_nuc_button);
         wakeNuc.setOnClickListener(v -> {
@@ -511,7 +502,6 @@ public class DialogManager {
                     errorMessage.setVisibility(View.VISIBLE);
                 }
             }
-            //TODO delete after testing - lets user through without inputting a pin
             else {
                 sideMenuFragment.navigateToSettingsPage(navigationType);
                 pinDialog.dismiss();
@@ -663,9 +653,7 @@ public class DialogManager {
             MainActivity.hasNotReceivedPing = 0;
         });
 
-        reconnectDialog.setOnDismissListener(v -> {
-            MainActivity.startNucPingMonitor();
-        });
+        reconnectDialog.setOnDismissListener(v -> MainActivity.startNucPingMonitor());
 
         reconnectDialog.show();
         reconnectDialog.getWindow().setLayout(680, 720);
@@ -858,7 +846,7 @@ public class DialogManager {
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
 
         basicDialog.show();
-        basicDialog.getWindow().setLayout(1200, 1000);
+        basicDialog.getWindow().setLayout(1100, 1000);
     }
 
     /**
@@ -873,11 +861,13 @@ public class DialogManager {
         Actions actionResume = new Actions("Resume", "resume");
         Actions actionPause = new Actions("Pause", "pause");
         Actions actionShutdown = new Actions("Shutdown", "shutdown");
+        Actions actionOther = new Actions("Other", "huh");
 
         ArrayList<Actions> ga = new ArrayList<>();
         ga.add(actionResume);
         ga.add(actionPause);
         ga.add(actionShutdown);
+        ga.add(actionOther);
 
         details.setGlobalActions(ga);
 
@@ -899,8 +889,6 @@ public class DialogManager {
         ls.add(level2);
 
         details.setLevels(ls);
-
-
 
         return details;
     }
