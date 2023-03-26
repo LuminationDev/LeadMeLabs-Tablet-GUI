@@ -98,4 +98,5 @@
     <string name="update_available">Update available</string>
     <string name="update_message">There is an update available on the Google Play Store. Please contact your IT department to install it.</string>
     <string name="ignore">Ignore</string>
+    <string name="station_name_warning">Station name can only contains letters, numbers and spaces</string>
 </resources>
