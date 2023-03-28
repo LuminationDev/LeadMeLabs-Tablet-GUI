@@ -186,8 +186,10 @@ public class StationsViewModel extends ViewModel {
         }
         for (Station station: stations.getValue()) {
             if (station.id == stationId) {
-                list = new ArrayList<>(station.applications);
-                list.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
+                if(SettingsFragment.checkLockedRooms(station.room)) {
+                    list = new ArrayList<>(station.applications);
+                    list.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
+                }
             }
         }
         return list;
@@ -220,7 +222,7 @@ public class StationsViewModel extends ViewModel {
         Station station = StationsFragment.mViewModel.getStationById(Integer.parseInt(id));
 
         //Exit the function if the tablet is in wall mode.
-        if(SettingsFragment.mViewModel.getHideStationControls().getValue()) {
+        if(Boolean.TRUE.equals(SettingsFragment.mViewModel.getHideStationControls().getValue())) {
             return;
         }
 

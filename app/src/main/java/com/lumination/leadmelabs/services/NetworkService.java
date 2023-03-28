@@ -120,7 +120,7 @@ public class NetworkService extends Service {
 
         Log.d(TAG, "Going to send: " + message);
         if (getEncryptionKey().length() == 0) {
-            DialogManager.createBasicDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
+            DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
         message = EncryptionHelper.encrypt(message, getEncryptionKey());
@@ -282,7 +282,7 @@ public class NetworkService extends Service {
         String message = byteArrayOutputStream.toString();
 
         if (getEncryptionKey().length() == 0) {
-            DialogManager.createBasicDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
+            DialogManager.createMissingEncryptionDialog("Unable to communicate with stations", "Encryption key not set. Please contact your IT department for help");
             return;
         }
         message = EncryptionHelper.decrypt(message, getEncryptionKey());

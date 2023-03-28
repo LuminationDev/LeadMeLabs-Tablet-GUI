@@ -7,11 +7,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.lumination.leadmelabs.models.Appliance;
-import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.services.NetworkService;
 import com.lumination.leadmelabs.ui.room.RoomFragment;
 import com.lumination.leadmelabs.ui.sidemenu.submenu.SubMenuFragment;
-import com.lumination.leadmelabs.ui.stations.StationsFragment;
 import com.lumination.leadmelabs.utilities.Constants;
 
 import org.json.JSONArray;
@@ -146,9 +144,6 @@ public class ApplianceViewModel extends ViewModel {
                 }
             }
 
-            if(!current.getString("type").equals(Constants.SCENE)) {
-                addAssociatedAppliances(current.getString("type"), current, appliance);
-            }
             st.add(appliance);
         }
 
@@ -184,18 +179,6 @@ public class ApplianceViewModel extends ViewModel {
 
             for(String cards : inactiveObjects.keySet()) {
                 updateIfVisible(cards);
-            }
-        }
-    }
-
-    /**
-     * Join any associated objects to the current appliance.
-     */
-    private void addAssociatedAppliances(String type, JSONObject current, Appliance appliance) throws JSONException {
-        if(type.equals(Constants.LED)) {
-            Station temp = StationsFragment.mViewModel.getStationById(current.getInt("associatedStation"));
-            if(temp != null) {
-                temp.associated = appliance;
             }
         }
     }
