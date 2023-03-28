@@ -139,10 +139,10 @@ android:background="@drawable/bg_alertdialog_vern">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
                 android:text="Ignoring stops the connection prompt for 10 minutes."
                 android:textAlignment="center"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="11sp" />
         </com.google.android.flexbox.FlexboxLayout>
 
     </com.google.android.flexbox.FlexboxLayout>
