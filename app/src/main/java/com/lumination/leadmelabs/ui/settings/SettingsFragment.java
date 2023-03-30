@@ -119,6 +119,18 @@ public class SettingsFragment extends Fragment {
                 mViewModel.setAnalyticsEnabled(isChecked)
         );
 
+        //The toggle for turning exit prompts on and off
+        FlexboxLayout enableExitPromptsLayout = view.findViewById(R.id.exit_prompt_controls);
+        SwitchCompat enableExitPromptsToggle = view.findViewById(R.id.exit_prompt_controls_toggle);
+        enableExitPromptsToggle.setChecked(Boolean.TRUE.equals(mViewModel.getAdditionalExitPrompts().getValue()));
+        enableExitPromptsLayout.setOnClickListener(v ->
+                enableExitPromptsToggle.setChecked(!enableExitPromptsToggle.isChecked())
+        );
+
+        enableExitPromptsToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setAdditionalExitPrompts(isChecked)
+        );
+
         //Send the user to the play store listing of LeadMe Labs whilst unpinning the application
         FlexboxLayout updateLeadMeButton = view.findViewById(R.id.update_leadme);
         updateLeadMeButton.setOnClickListener(v -> MainActivity.UIHandler.post(() -> {
@@ -152,6 +164,14 @@ public class SettingsFragment extends Fragment {
         setLockedRoomButton.setOnClickListener(v ->
                 DialogManager.buildLockedRoomDialog(getContext())
         );
+    }
+
+    /**
+     * Check if additional exit prompts are enabled.
+     * @return A boolean if the application should display additional prompts.
+     */
+    public static boolean checkAdditionalExitPrompts() {
+        return Boolean.TRUE.equals(mViewModel.getAdditionalExitPrompts().getValue());
     }
 
     /**

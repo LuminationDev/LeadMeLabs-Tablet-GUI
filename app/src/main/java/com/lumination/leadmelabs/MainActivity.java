@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle args = new Bundle();
 
         //Loading the home screen
-        if (ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue()) {
+        if (Boolean.TRUE.equals(ViewModelProviders.of(this).get(SettingsViewModel.class).getHideStationControls().getValue())) {
             args.putString("menuSize", "mini");
             fragmentManager.beginTransaction()
                     .replace(R.id.main, ControlPageFragment.class, null)
