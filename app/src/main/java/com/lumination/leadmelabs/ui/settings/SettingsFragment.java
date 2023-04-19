@@ -30,6 +30,7 @@ public class SettingsFragment extends Fragment {
     public static SettingsViewModel mViewModel;
     private FragmentSettingsBinding binding;
 
+    private static int ipAddressPresses = 0;
     public static SettingsFragment instance;
     public static SettingsFragment getInstance() { return instance; }
 
@@ -164,6 +165,41 @@ public class SettingsFragment extends Fragment {
         setLockedRoomButton.setOnClickListener(v ->
                 DialogManager.buildLockedRoomDialog(getContext())
         );
+
+        FlexboxLayout internalTrafficLayout = view.findViewById(R.id.internal_traffic);
+        SwitchCompat internalTrafficToggle = view.findViewById(R.id.internal_traffic_toggle);
+        internalTrafficToggle.setChecked(Boolean.TRUE.equals(mViewModel.getInternalTrafficValue().getValue()));
+        internalTrafficLayout.setOnClickListener(v ->
+                internalTrafficToggle.setChecked(!internalTrafficToggle.isChecked())
+        );
+
+        internalTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setInternalTrafficValue(isChecked)
+        );
+
+        FlexboxLayout developerTrafficLayout = view.findViewById(R.id.developer_traffic);
+        SwitchCompat developerTrafficToggle = view.findViewById(R.id.developer_traffic_toggle);
+        developerTrafficToggle.setChecked(Boolean.TRUE.equals(mViewModel.getDeveloperTrafficValue().getValue()));
+        developerTrafficLayout.setOnClickListener(v ->
+                developerTrafficToggle.setChecked(!developerTrafficToggle.isChecked())
+        );
+
+        developerTrafficToggle.setOnCheckedChangeListener((compoundButton, isChecked) ->
+                mViewModel.setDeveloperTrafficValue(isChecked)
+        );
+
+        FlexboxLayout ipAddress = view.findViewById(R.id.ip_address);
+        ipAddress.setOnClickListener(l -> {
+            ipAddressPresses++;
+            if (ipAddressPresses == 20) {
+                internalTrafficLayout.setVisibility(View.VISIBLE);
+                developerTrafficLayout.setVisibility(View.VISIBLE);
+            }
+            if (ipAddressPresses == 21) {
+                internalTrafficLayout.setVisibility(View.GONE);
+                developerTrafficLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**
