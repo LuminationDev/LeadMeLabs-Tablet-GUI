@@ -30,6 +30,8 @@ public class SettingsViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> hideStationControls;
     private MutableLiveData<Boolean> enableAnalyticsCollection;
     private MutableLiveData<Boolean> additionalExitPrompts;
+    private MutableLiveData<Boolean> internalTraffic;
+    private MutableLiveData<Boolean> developerTraffic;
     private MutableLiveData<Boolean> enableRoomLock;
     private MutableLiveData<HashSet<String>> lockedRooms;
     private MutableLiveData<Boolean> updateAvailable = new MutableLiveData<>(false);
@@ -382,5 +384,49 @@ public class SettingsViewModel extends AndroidViewModel {
                 .replace("]", "")
                 .replace(", ", ",")
                 .split(",")));
+    }
+
+    /**
+     *
+     */
+    public LiveData<Boolean> getInternalTrafficValue() {
+        if (internalTraffic == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("internal_traffic", Context.MODE_PRIVATE);
+            internalTraffic = new MutableLiveData<>(sharedPreferences.getBoolean("internal_traffic", false));
+        }
+        return internalTraffic;
+    }
+
+    /**
+     * Set whether the internal traffic is engaged.
+     */
+    public void setInternalTrafficValue(Boolean value) {
+        internalTraffic.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("internal_traffic", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("internal_traffic", value);
+        editor.apply();
+    }
+
+    /**
+     *
+     */
+    public LiveData<Boolean> getDeveloperTrafficValue() {
+        if (developerTraffic == null) {
+            SharedPreferences sharedPreferences = getApplication().getSharedPreferences("developer_traffic", Context.MODE_PRIVATE);
+            developerTraffic = new MutableLiveData<>(sharedPreferences.getBoolean("developer_traffic", false));
+        }
+        return developerTraffic;
+    }
+
+    /**
+     * Set whether the developer traffic is engaged.
+     */
+    public void setDeveloperTrafficValue(Boolean value) {
+        developerTraffic.setValue(value);
+        SharedPreferences sharedPreferences = getApplication().getSharedPreferences("developer_traffic", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("developer_traffic", value);
+        editor.apply();
     }
 }

@@ -166,17 +166,19 @@ public class StationsViewModel extends ViewModel {
     }
 
     public List<Application> getAllApplications() {
-        HashSet<Application> hashSet = new HashSet<>();
+        HashSet<Integer> idSet = new HashSet<>();
+
         if(stations.getValue() == null) {
             return new ArrayList<>();
         }
-        for (Station station: stations.getValue()) {
-            //Check if station does not have any loaded games?
-            hashSet.addAll(station.applications);
-        }
-        ArrayList<Application> list = new ArrayList<>(hashSet);
-        list.sort((application, application2) -> application.name.compareToIgnoreCase(application2.name));
-        return list;
+
+        //Only add applications with a unique id
+        return stations.getValue().stream()
+                .flatMap(station -> station.applications.stream())
+                .filter(app -> idSet.add(app.id))
+                .distinct()
+                .sorted((application, application2) -> application.name.compareToIgnoreCase(application2.name))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public List<Application> getStationApplications(int stationId) {

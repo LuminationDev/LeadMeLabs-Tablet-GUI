@@ -1,6 +1,7 @@
 package com.lumination.leadmelabs.models;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModelProviders;
 
@@ -15,6 +16,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Station implements Cloneable {
     public String name;
@@ -30,6 +32,7 @@ public class Station implements Cloneable {
     private CountDownTimer timer;
     public String macAddress;
     public String ledRingId;
+    public Date gameStartTime = null;
 
     @Override
     public Station clone() {

@@ -104,6 +104,8 @@ public class UIUpdateManager {
                     break;
                 case "Station":
                     if (additionalData.startsWith("SetValue")) {
+                        Log.e("Apps", additionalData);
+
                         String[] keyValue = additionalData.split(":", 3);
                         String key = keyValue[1];
                         String value = keyValue[2];
@@ -223,11 +225,21 @@ public class UIUpdateManager {
                         HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {};
                         FirebaseManager.logAnalyticEvent("appliances_updated", analyticsAttributes);
                     }
-
                     break;
-                case "Scanner":
-                    updateNUCAddress(additionalData);
-                    MainActivity.getInstance().findViewById(R.id.reconnect_overlay).setVisibility(View.GONE);
+                case "Analytics":
+                    if (additionalData.startsWith("ExperienceTime")) {
+                        String[] parts = additionalData.split(",", 7);
+                        if (parts.length < 7) {
+                            break;
+                        }
+                        HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                            put("experience_time", parts[2]);
+                            put("station_id", parts[4]);
+                            put("experience_name", parts[6]);
+                        }};
+                        FirebaseManager.logAnalyticEvent("experience_time", analyticsAttributes);
+                    }
+                    break;
             }
         } catch(JSONException e) {
             Log.e(TAG, "Unable to handle JSON request");
