@@ -387,7 +387,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
-     *
+     * Check if the user tablet is Lumination internal traffic. Used for analytics
      */
     public LiveData<Boolean> getInternalTrafficValue() {
         if (internalTraffic == null) {
@@ -398,7 +398,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Set whether the internal traffic is engaged.
+     * Set if the user tablet is Lumination internal traffic. Used for analytics
      */
     public void setInternalTrafficValue(Boolean value) {
         internalTraffic.setValue(value);
@@ -409,7 +409,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
-     *
+     * Set if the user tablet is Lumination developer traffic. Used for analytics
      */
     public LiveData<Boolean> getDeveloperTrafficValue() {
         if (developerTraffic == null) {
@@ -420,7 +420,7 @@ public class SettingsViewModel extends AndroidViewModel {
     }
 
     /**
-     * Set whether the developer traffic is engaged.
+     * Check if the user tablet is Lumination developer traffic. Used for analytics
      */
     public void setDeveloperTrafficValue(Boolean value) {
         developerTraffic.setValue(value);

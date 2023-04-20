@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -227,6 +226,25 @@ public class StationSingleFragment extends Fragment {
             }
         });
 
+        MaterialButton configureSteamCMDButton = view.findViewById(R.id.configure_steamcmd);
+        configureSteamCMDButton.setOnClickListener(v -> {
+            BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
+                if (confirmationResult) {
+                    int id = binding.getSelectedStation().id;
+                    DialogManager.steamGuardKeyEntry(id);
+                }
+            };
+
+            DialogManager.createConfirmationDialog(
+                    "Confirm configuration",
+                    "A Steam guard key is required to be entered to configure the selected station, " +
+                            "the station will not show experiences until this is complete. You must have access " +
+                            "to the Steam's email account address to proceed.",
+                    confirmConfigCallback,
+                    "Cancel",
+                    "Proceed");
+        });
+
         ImageView gameControlImage = view.findViewById(R.id.game_control_image);
         mViewModel.getSelectedStation().observe(getViewLifecycleOwner(), station -> {
             binding.setSelectedStation(station);
@@ -285,7 +303,7 @@ public class StationSingleFragment extends Fragment {
     private void shutdownStation(MaterialButton shutdownButton, int id) {
         CountdownCallbackInterface shutdownCountDownCallback = seconds -> {
             if (seconds <= 0) {
-                shutdownButton.setText("Shut Down Station");
+                shutdownButton.setText(R.string.shut_down_station);
             } else {
                 if (!cancelledShutdown) {
                     shutdownButton.setText("Cancel (" + seconds + ")");
@@ -302,7 +320,7 @@ public class StationSingleFragment extends Fragment {
             if (DialogManager.shutdownTimer != null) {
                 DialogManager.shutdownTimer.cancel();
             }
-            shutdownButton.setText("Shut Down Station");
+            shutdownButton.setText(R.string.shut_down_station);
         }
     }
 }
