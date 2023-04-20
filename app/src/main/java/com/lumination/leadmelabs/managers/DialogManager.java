@@ -3,8 +3,11 @@ package com.lumination.leadmelabs.managers;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
 import android.webkit.WebView;
@@ -12,6 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +24,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alimuzaffar.lib.pin.PinEntryEditText;
+import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.interfaces.CountdownCallbackInterface;
 import com.lumination.leadmelabs.MainActivity;
@@ -59,6 +65,7 @@ import java.util.regex.Pattern;
 public class DialogManager {
     private static final HashMap<String, AlertDialog> openDialogs = new HashMap<>();
 
+    public static AlertDialog steamGuardEntryDialog;
     public static androidx.appcompat.app.AlertDialog gameLaunchDialog;
     public static List<Integer> gameLaunchStationIds;
     public static AlertDialog reconnectDialog;
@@ -173,15 +180,15 @@ public class DialogManager {
      * Create a dialog box associated with a tablet update with a custom title and content based on
      * the strings that are passed in.
      */
-    public static void createUpdateDialog() {
+    public static void createUpdateDialog(String titleText, String contentText) {
         View basicDialogView = View.inflate(MainActivity.getInstance(), R.layout.alert_dialog_update_vern, null);
         AlertDialog basicDialog = new AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(basicDialogView).create();
 
         TextView title = basicDialogView.findViewById(R.id.title);
-        title.setText(R.string.update_available);
+        title.setText(titleText);
 
         TextView contentView = basicDialogView.findViewById(R.id.content_text);
-        contentView.setText(R.string.update_message);
+        contentView.setText(contentText);
 
         Button cancelButton = basicDialogView.findViewById(R.id.close_dialog);
         cancelButton.setOnClickListener(w -> basicDialog.dismiss());
@@ -663,12 +670,12 @@ public class DialogManager {
 
         //Show the empty room list prompt or set the rooms the recycler view
         if((rooms != null ? rooms.size() : 0) == 0) {
-            roomStatus.setText("There are currently no rooms. Please check that the NUC is connected.");
+            roomStatus.setText(R.string.no_rooms);
             roomStatus.setVisibility(View.VISIBLE);
             roomRecyclerView.setVisibility(View.GONE);
         }
         else if (rooms.size() == 1) {
-            roomStatus.setText("There is only one room available. Lock will not affect anything.");
+            roomStatus.setText(R.string.one_room);
             roomStatus.setVisibility(View.VISIBLE);
             roomRecyclerView.setVisibility(View.GONE);
         } else {
@@ -920,6 +927,62 @@ public class DialogManager {
                 }
             }
         }
+    }
+
+    /**
+     * A popup that allows the entry of a steam guard key.
+     * @param stationId An integer of the ID of a station which is to be configured.
+     */
+    public static void steamGuardKeyEntry(int stationId) {
+        View view = View.inflate(MainActivity.getInstance(), R.layout.dialog_steam_guard_input, null);
+        steamGuardEntryDialog = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.getInstance(), R.style.AlertDialogVernTheme).setView(view).create();
+
+        //Reset in case of pre-emptive closure
+        FlexboxLayout entry = view.findViewById(R.id.steam_guard_entry);
+        entry.setVisibility(View.VISIBLE);
+        ProgressBar waiting = view.findViewById(R.id.waiting_for_result);
+        waiting.setVisibility(View.GONE);
+
+        final String[] steamGuard = {""};
+
+        Button confirmButton = view.findViewById(R.id.confirm_button);
+        confirmButton.setOnClickListener(w -> {
+            NetworkService.sendMessage("Station," + stationId, "Station", "SetValue:steamCMD:" + steamGuard[0]);
+
+            //Present a loading bar until the output comes back
+            entry.setVisibility(View.GONE);
+            waiting.setVisibility(View.VISIBLE);
+        });
+
+        //Track as the code is input into the pin entry area
+        PinEntryEditText text = view.findViewById(R.id.steam_guard_key);
+        text.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                steamGuard[0] = s.toString();
+
+                if(steamGuard[0].length() == 5) {
+                    confirmButton.setEnabled(true);
+                    confirmButton.setBackgroundTintList(ColorStateList.valueOf(MainActivity.getInstance().getColor(R.color.blue)));
+                } else {
+                    confirmButton.setEnabled(false);
+                    confirmButton.setBackgroundTintList(ColorStateList.valueOf(MainActivity.getInstance().getColor(R.color.grey)));
+                }
+            }
+        });
+
+        Button cancelButton = view.findViewById(R.id.close_dialog);
+        cancelButton.setOnClickListener(w -> steamGuardEntryDialog.dismiss());
+
+        steamGuardEntryDialog.setCancelable(false);
+        steamGuardEntryDialog.show();
+        steamGuardEntryDialog.getWindow().setLayout(680, 680);
     }
 
     /**

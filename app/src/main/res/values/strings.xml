@@ -106,4 +106,7 @@
     <string name="developer_traffic">Developer traffic</string>
     <string name="internal_traffic">Internal traffic</string>
     <string name="set_nuc_mac_address">Set NUC MAC address</string>
+    <string name="confirm">Confirm</string>
+    <string name="no_rooms">There are currently no rooms. Please check that the NUC is connected.</string>
+    <string name="one_room">There is only one room available. Lock will not affect anything.</string>
 </resources>

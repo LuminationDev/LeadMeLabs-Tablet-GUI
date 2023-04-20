@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.flexbox.FlexboxLayout;
 import com.lumination.leadmelabs.MainActivity;
 import com.lumination.leadmelabs.R;
+import com.lumination.leadmelabs.interfaces.BooleanCallbackInterface;
 import com.lumination.leadmelabs.models.Appliance;
 import com.lumination.leadmelabs.models.Station;
 import com.lumination.leadmelabs.ui.appliance.ApplianceFragment;
@@ -339,6 +340,34 @@ public class UIUpdateManager {
                         }
                     });
                     break;
+                case "steamCMD":
+                    if(value.equals("required")) { station.requiresSteamGuard = true; }
+                    if(value.equals("configured") && station.requiresSteamGuard) {
+                        if(DialogManager.steamGuardEntryDialog.isShowing()) {
+                            DialogManager.steamGuardEntryDialog.dismiss();
+                        }
+                        DialogManager.createUpdateDialog("Steam configuration", "SteamCMD has been successfully configured on station " + stationId);
+                        station.requiresSteamGuard = false;
+                    }
+                    if(value.equals("failure")) {
+                        if(DialogManager.steamGuardEntryDialog.isShowing()) {
+                            DialogManager.steamGuardEntryDialog.dismiss();
+                        }
+
+                        BooleanCallbackInterface confirmConfigCallback = confirmationResult -> {
+                            if (confirmationResult) {
+                                DialogManager.steamGuardKeyEntry(Integer.parseInt(stationId));
+                            }
+                        };
+
+                        DialogManager.createConfirmationDialog(
+                                "Configuration Failure",
+                                "An incorrect key has been provided, please try again or cancel",
+                                confirmConfigCallback,
+                                "Cancel",
+                                "Try again");
+                    }
+                    break;
             }
             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).updateStationById(Integer.parseInt(stationId), station);
         });
@@ -389,15 +418,5 @@ public class UIUpdateManager {
                 ViewModelProviders.of(MainActivity.getInstance()).get(ApplianceViewModel.class).updateActiveApplianceList(id, value, ipAddress);
                 break;
         }
-    }
-
-    /**
-     * Update the NUC address based on the results from the scanner.
-     * @param response A string representing the IP address of the NUC.
-     */
-    private static void updateNUCAddress(String response) {
-        MainActivity.runOnUI(() ->
-                ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).setNucAddress(response)
-        );
     }
 }
