@@ -15,6 +15,7 @@ import com.lumination.leadmelabs.ui.settings.SettingsFragment;
 import com.lumination.leadmelabs.ui.stations.StationsViewModel;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Station implements Cloneable {
     public String name;
@@ -71,13 +72,13 @@ public class Station implements Cloneable {
             if (appData.length > 1) {
                 switch (appData[0]) {
                     case "Custom":
-                        newApplications.add(new CustomApplication(appData[0], appData[2].replace("\"", ""), Integer.parseInt(appData[1])));
+                        newApplications.add(new CustomApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
                         break;
                     case "Steam":
-                        newApplications.add(new SteamApplication(appData[0], appData[2].replace("\"", ""), Integer.parseInt(appData[1])));
+                        newApplications.add(new SteamApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
                         break;
                     case "Vive":
-                        newApplications.add(new ViveApplication(appData[0], appData[2].replace("\"", ""), Integer.parseInt(appData[1])));
+                        newApplications.add(new ViveApplication(appData[0], appData[2].replace("\"", ""), appData[1]));
                         break;
                 }
             }
@@ -93,13 +94,13 @@ public class Station implements Cloneable {
 
     /**
      * Detect if a particular station has an application installed on it
-     * @param applicationId An int that represents the ID of an experience.
+     * @param applicationId A long that represents the ID of an experience.
      * @return A boolean if the application is installed.
      */
-    public boolean hasApplicationInstalled(int applicationId)
+    public boolean hasApplicationInstalled(String applicationId)
     {
         for (Application application:this.applications) {
-            if (application.id == applicationId) {
+            if (Objects.equals(application.id, applicationId)) {
                 return true;
             }
         }

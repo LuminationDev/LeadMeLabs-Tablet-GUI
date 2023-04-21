@@ -343,6 +343,8 @@ public class UIUpdateManager {
                 case "steamCMD":
                     if(value.equals("required")) { station.requiresSteamGuard = true; }
                     if(value.equals("configured") && station.requiresSteamGuard) {
+                        if(DialogManager.steamGuardEntryDialog == null) return;
+
                         if(DialogManager.steamGuardEntryDialog.isShowing()) {
                             DialogManager.steamGuardEntryDialog.dismiss();
                         }
@@ -350,6 +352,8 @@ public class UIUpdateManager {
                         station.requiresSteamGuard = false;
                     }
                     if(value.equals("failure")) {
+                        if(DialogManager.steamGuardEntryDialog == null) return;
+
                         if(DialogManager.steamGuardEntryDialog.isShowing()) {
                             DialogManager.steamGuardEntryDialog.dismiss();
                         }

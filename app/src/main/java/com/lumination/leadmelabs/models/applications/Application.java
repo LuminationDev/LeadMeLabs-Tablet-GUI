@@ -7,10 +7,10 @@ import java.util.Objects;
 public class Application {
     public String type;
     public String name;
-    public int id;
+    public String id;
     public Details details;
 
-    public Application(String type, String name, int id) {
+    public Application(String type, String name, String id) {
         this.type = type;
         this.name = name;
         this.id = id;

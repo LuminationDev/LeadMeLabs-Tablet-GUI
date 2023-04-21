@@ -121,15 +121,16 @@ public class StationSingleFragment extends Fragment {
 
         Button restartGame = view.findViewById(R.id.station_restart_session);
         restartGame.setOnClickListener(v -> {
-            if (binding.getSelectedStation().gameId != null && binding.getSelectedStation().gameId.length() > 0) {
-                NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Launch:" + binding.getSelectedStation().gameId);
-                SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
-                DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(Integer.parseInt(binding.getSelectedStation().gameId)), true);
-                HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
-                    put("station_id", String.valueOf(binding.getSelectedStation().id));
-                }};
-                FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
-            }
+            NetworkService.sendMessage("Station," + binding.getSelectedStation().id, "Experience", "Restart");
+
+
+            SideMenuFragment.loadFragment(DashboardPageFragment.class, "dashboard");
+            DialogManager.awaitStationGameLaunch(new int[] { binding.getSelectedStation().id }, ApplicationSelectionFragment.mViewModel.getSelectedApplicationName(binding.getSelectedStation().gameId), true);
+
+            HashMap<String, String> analyticsAttributes = new HashMap<String, String>() {{
+                put("station_id", String.valueOf(binding.getSelectedStation().id));
+            }};
+            FirebaseManager.logAnalyticEvent("session_restarted", analyticsAttributes);
         });
 
         Button restartVr = view.findViewById(R.id.station_restart_vr);
@@ -256,10 +257,10 @@ public class StationSingleFragment extends Fragment {
                         filePath = CustomApplication.getImageUrl(station.gameName);
                         break;
                     case "Steam":
-                        filePath = SteamApplication.getImageUrl(station.id);
+                        filePath = SteamApplication.getImageUrl(station.gameId);
                         break;
                     case "Vive":
-                        filePath = ViveApplication.getImageUrl(station.id);
+                        filePath = ViveApplication.getImageUrl(station.gameId);
                         break;
                     default:
                         filePath = "";

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class StationsViewModel extends ViewModel {
     private MutableLiveData<List<Station>> stations;
     private MutableLiveData<Station> selectedStation;
-    private MutableLiveData<Integer> selectedApplicationId = new MutableLiveData<>();
+    private MutableLiveData<String> selectedApplicationId = new MutableLiveData<>();
 
     public LiveData<List<Station>> getStations() {
         if (stations == null) {
@@ -50,17 +50,27 @@ public class StationsViewModel extends ViewModel {
         return stations.stream().map(station -> station.name).collect(Collectors.toList());
     }
 
-    public int getSelectedApplicationId() {
+    public String getSelectedApplicationId() {
         return selectedApplicationId.getValue();
     }
 
-    public String getSelectedApplicationName(int applicationId) {
+    public String getSelectedApplicationName(String applicationId) {
         List<Application> allApps = getAllApplications();
-        allApps.removeIf(application -> application.id != applicationId);
+
+        Log.e("APP TO FIND", "ID: " + applicationId);
+
+        for (Application app : allApps) {
+            Log.e("APP", "ID: " + app.id + " NAME: " + app.name);
+        }
+
+        allApps.removeIf(application -> !Objects.equals(application.id, applicationId));
+
+        if(allApps.size() == 0) return "experience";
+
         return allApps.get(0).name;
     }
 
-    public void selectSelectedApplication(int id) {
+    public void selectSelectedApplication(String id) {
         selectedApplicationId.setValue(id);
     }
 
@@ -166,7 +176,7 @@ public class StationsViewModel extends ViewModel {
     }
 
     public List<Application> getAllApplications() {
-        HashSet<Integer> idSet = new HashSet<>();
+        HashSet<String> idSet = new HashSet<>();
 
         if(stations.getValue() == null) {
             return new ArrayList<>();
