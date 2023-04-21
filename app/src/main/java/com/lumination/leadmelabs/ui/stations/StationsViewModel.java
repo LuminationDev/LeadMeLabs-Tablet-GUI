@@ -56,17 +56,8 @@ public class StationsViewModel extends ViewModel {
 
     public String getSelectedApplicationName(String applicationId) {
         List<Application> allApps = getAllApplications();
-
-        Log.e("APP TO FIND", "ID: " + applicationId);
-
-        for (Application app : allApps) {
-            Log.e("APP", "ID: " + app.id + " NAME: " + app.name);
-        }
-
         allApps.removeIf(application -> !Objects.equals(application.id, applicationId));
-
         if(allApps.size() == 0) return "experience";
-
         return allApps.get(0).name;
     }
 
