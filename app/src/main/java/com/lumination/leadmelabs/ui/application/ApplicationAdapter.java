@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ApplicationAdapter extends BaseAdapter {
-    private final String TAG = "SteamApplicationAdapter";
+    private final String TAG = "ApplicationAdapter";
 
     public ArrayList<Application> applicationList = new ArrayList<>();
     public static int stationId = 0;
@@ -60,13 +60,14 @@ public class ApplicationAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return applicationList.get(position).id;
+        return 0;
     }
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         ApplicationTileBinding binding;
         if (view == null) {
-            view = mInflater.inflate(R.layout.application_tile, null);
+            mInflater.inflate(R.layout.application_tile, null);
             binding = ApplicationTileBinding.inflate(mInflater, parent, false);
             view = binding.getRoot();
             view.setTag(binding);
