@@ -54,11 +54,13 @@ public class UIUpdateManager {
             if(actionNamespace.equals("Ping")) {
                 MainActivity.hasNotReceivedPing = 0;
                 if (DialogManager.reconnectDialog != null) {
-                    FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
-                    if (reconnect != null) {
-                        reconnect.setVisibility(View.GONE);
+                    if(!DialogManager.reconnectDialog.isShowing()) {
+                        FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
+                        if (reconnect != null) {
+                            reconnect.setVisibility(View.GONE);
+                        }
+                        DialogManager.reconnectDialog.dismiss();
                     }
-                    DialogManager.reconnectDialog.dismiss();
                 }
                 return;
             }

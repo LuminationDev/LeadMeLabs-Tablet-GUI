@@ -312,7 +312,7 @@
                     app:alignItems="center">
                     <TextView
                         style="@style/SettingsText"
-                        android:text="@{`Locked rooms: ` + settings.lockedRooms.toString()}"
+                        android:text="@{`Locked rooms: ` + (settings.lockedRooms.size() == 0 ? `None` : String.join(`, `, settings.lockedRooms))}"
                         app:drawableRightCompat="@drawable/icon_menu_right" />
                 </com.google.android.flexbox.FlexboxLayout>
             </com.google.android.flexbox.FlexboxLayout>

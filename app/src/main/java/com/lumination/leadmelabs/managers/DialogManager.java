@@ -661,7 +661,10 @@ public class DialogManager {
 
         //Get the currently selected value for the locked room or 'None' if nothing has been selected
         TextView preview = view.findViewById(R.id.locked_room_preview);
-        preview.setText(SettingsFragment.mViewModel.getLockedRooms().getValue().toString());
+        preview.setText(
+                SettingsFragment.mViewModel.getLockedRooms().getValue().size() == 0 ?
+                        "None" :
+                        String.join(", ", SettingsFragment.mViewModel.getLockedRooms().getValue()));
 
         HashSet<String> rooms = RoomFragment.mViewModel.getAllRooms().getValue();
 

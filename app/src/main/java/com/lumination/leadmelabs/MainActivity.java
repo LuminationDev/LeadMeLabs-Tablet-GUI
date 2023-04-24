@@ -134,7 +134,12 @@ public class MainActivity extends AppCompatActivity {
                 hasNotReceivedPing += 1;
                 if (hasNotReceivedPing > 3) {
                     Log.e("MainActivity", "NUC Lost");
-                    DialogManager.buildReconnectDialog();
+                    if(DialogManager.reconnectDialog == null) {
+                        DialogManager.buildReconnectDialog();
+                    }
+                    else if(!DialogManager.reconnectDialog.isShowing()) {
+                        DialogManager.buildReconnectDialog();
+                    }
 
                     //Wait 10 minutes and then try to reconnect every 10 minutes - this will stop
                     //the popup occurring over night when the NUC restarts. The scheduler will be
