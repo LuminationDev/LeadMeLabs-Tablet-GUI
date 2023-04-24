@@ -3,6 +3,7 @@ package com.lumination.leadmelabs.ui.settings;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -360,7 +361,7 @@ public class SettingsViewModel extends AndroidViewModel {
     public void setLockedRooms(String value) {
         String entry = value;
 
-        if(value.equals("[]")) {
+        if(value.equals("")) {
             entry = "None";
             lockedRooms.setValue(new HashSet<>());
         } else {
