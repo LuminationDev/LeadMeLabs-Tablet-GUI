@@ -70,7 +70,6 @@ public class UIUpdateManager {
                 return;
             }
 
-
             switch (actionNamespace) {
                 case "Stations":
                     if (additionalData.startsWith("List")) {
@@ -127,7 +126,7 @@ public class UIUpdateManager {
                     }
 
                     //Early return statement
-                    if(station == null || Boolean.FALSE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
+                    if(station == null || Boolean.TRUE.equals(ViewModelProviders.of(MainActivity.getInstance()).get(SettingsViewModel.class).getHideStationControls().getValue())) {
                         return;
                     }
 
@@ -331,9 +330,6 @@ public class UIUpdateManager {
                     station.setApplicationsFromJsonString(value);
                     break;
                 case "details":
-                    if(station.gameName == null) {
-                        return;
-                    }
                     MainActivity.runOnUI(() -> {
                         try {
                             ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setApplicationDetails(new JSONObject(value));
