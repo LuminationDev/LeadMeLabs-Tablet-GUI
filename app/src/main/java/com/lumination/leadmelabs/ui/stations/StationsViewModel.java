@@ -151,7 +151,9 @@ public class StationsViewModel extends ViewModel {
             Levels level = new Levels(temp.getString("name"), temp.getString("trigger"));
 
             //Add the level trigger as it's first action
-            level.addAction(new Actions("Set", level.trigger));
+            if(!level.trigger.equals("")) {
+                level.addAction(new Actions("Set", level.trigger));
+            }
 
             //Add the rest of the actions
             JSONArray actions = temp.getJSONArray("actions");
