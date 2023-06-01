@@ -54,7 +54,7 @@ public class UIUpdateManager {
             if(actionNamespace.equals("Ping")) {
                 MainActivity.hasNotReceivedPing = 0;
                 if (DialogManager.reconnectDialog != null) {
-                    if(!DialogManager.reconnectDialog.isShowing()) {
+                    if(DialogManager.reconnectDialog.isShowing()) {
                         FlexboxLayout reconnect = DialogManager.reconnectDialog.findViewById(R.id.reconnect_loader);
                         if (reconnect != null) {
                             reconnect.setVisibility(View.GONE);
@@ -317,12 +317,17 @@ public class UIUpdateManager {
                 case "gameName":
                     station.gameName = value;
 
+                    //Reset the selected application
+                    if  ((value != null ? value.length() : 0) == 0) {
+                        ViewModelProviders.of(MainActivity.getInstance()).get(StationsViewModel.class).setSelectedApplication(null);
+                    }
+
                     //Do no notify if the station is in another room
                     if(!SettingsFragment.checkLockedRooms(station.room)) {
                         return;
                     }
 
-                    if (value.length() > 0 && !value.equals("No session running")) {
+                    if ((value != null ? value.length() : 0) > 0 && !value.equals("No session running")) {
                         DialogManager.gameLaunchedOnStation(station.id);
                     }
                     break;
